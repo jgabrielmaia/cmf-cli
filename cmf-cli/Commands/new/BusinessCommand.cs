@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
-using System.Text.Json;
 using Cmf.CLI.Constants;
 using Cmf.CLI.Core;
 using Cmf.CLI.Core.Attributes;
@@ -43,6 +41,13 @@ namespace Cmf.CLI.Commands.New
                 var baseLayer = ExecutionContext.Instance.ProjectConfig.BaseLayer ?? CliConstants.DefaultBaseLayer;
                 includeMESNugets = baseLayer == BaseLayer.MES;
                 Log.Debug($"Project is targeting base layer {baseLayer}, so scaffolding {(includeMESNugets ? "with" : "without")} MES nugets.");
+                
+                args.AddRange(new[] 
+                {
+                    "--app", (ExecutionContext.Instance.ProjectConfig.RepositoryType == RepositoryType.App).ToString(),
+                    "--fileVersion", $"{mesVersion}.0",
+                    "--assemblyVersion", $"{mesVersion.Major}.{mesVersion.Minor}.0.0",
+                });
             }
 
             // calculate relative path to local environment and create a new symbol for it
