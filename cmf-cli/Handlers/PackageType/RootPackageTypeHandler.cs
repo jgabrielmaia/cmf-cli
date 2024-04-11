@@ -88,8 +88,11 @@ namespace Cmf.CLI.Handlers
 
             fileSystem.Directory.CreateDirectory(path);
 
-            string manifestPath = Path.Combine(path, CliConstants.DeploymentFrameworkAppManifestFileName);
+            string manifestPath = Path.Combine(path, CliConstants.AppManifestFileName);
             CmfApp.Save(manifestPath);
+
+            string deploymentManifestPath = Path.Combine(path, CliConstants.AppDeploymentManifestFileName);
+            CmfApp.Save(deploymentManifestPath);
 
             string iconDestinationPath = Path.Combine(path, CliConstants.AppIcon);
 
@@ -109,6 +112,7 @@ namespace Cmf.CLI.Handlers
             this.fileSystem.File.Move(tempzipPath, destZipPath, true);
 
             // clean up folder files
+            fileSystem.File.Delete(deploymentManifestPath);
             fileSystem.File.Delete(iconDestinationPath);
             fileSystem.File.Delete(manifestPath);
         }
