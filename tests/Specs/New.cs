@@ -75,6 +75,49 @@ namespace tests.Specs
             });
         }
 
+        [Theory]
+        [InlineData(BaseLayer.Core, RepositoryType.App)]
+        [InlineData(BaseLayer.MES, RepositoryType.Customization)]
+        public void Grafana(BaseLayer baseLayer, RepositoryType repositoryType)
+        {
+            RunNew(
+                new GrafanaCommand(), 
+                "Cmf.Custom.Grafana",
+                mesVersion: "10.2.1", 
+                ngxSchematicsVersion: "1.3.3",
+                baseLayer: baseLayer, 
+                repositoryType: repositoryType, 
+                extraAsserts: args =>
+            {
+                var (pkgVersion, dir) = args;
+
+                var projectName = ExecutionContext.Instance.ProjectConfig.ProjectName;
+
+                Assert.True(Directory.Exists("Cmf.Custom.Grafana"), "Grafana package folder is missing");
+                Assert.True(Directory.Exists($"Cmf.Custom.Grafana/{pkgVersion}"), "Grafana Version folder is missing");
+                Assert.True(Directory.Exists($"Cmf.Custom.Grafana/{pkgVersion}/dashboards"), "Grafana dashboards folder is missing");
+                Assert.True(Directory.Exists($"Cmf.Custom.Grafana/{pkgVersion}/datasources"), "Grafana datasources folder is missing");
+
+                Assert.True(Directory.Exists($"Cmf.Custom.Grafana/{pkgVersion}/dashboards/{projectName}/"), "Project Dashboards folder is missing or has wrong name");
+                Assert.True(File.Exists($"Cmf.Custom.Grafana/{pkgVersion}/dashboards/dashboards.yaml"), "Dashboards configuration file is missing or has wrong name");
+
+                Assert.True(File.Exists(
+                    $"Cmf.Custom.Grafana/{pkgVersion}/datasources/datasources.yaml"), 
+                    "Datasources configuration file is missing or has wrong name");
+                
+                if(repositoryType == RepositoryType.App)
+                {
+                    Assert.True(File.Exists(
+                        $"Cmf.Custom.Grafana/{pkgVersion}/datasources/criticalmanufacturing-grpc-datasource.json"),
+                        "Datamanager datasource file is missing or has wrong name");
+                }
+                else
+                {
+                    Assert.False(File.Exists($"Cmf.Custom.Grafana/{pkgVersion}/datasources/criticalmanufacturing-grpc-datasource.json"));
+                }
+            });
+        }
+
         [Fact]
         public void Data()
         {
