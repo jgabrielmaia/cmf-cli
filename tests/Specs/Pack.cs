@@ -363,6 +363,7 @@ namespace tests.Specs
                 List<string> appEntries = TestUtilities.GetFileEntriesFromZip($"{dir}/Package/{appfilesName}");
                 Assert.True(appEntries.HasAny(entry => entry == "app_manifest.xml"), "App manifest file does not exist");
                 Assert.True(appEntries.HasAny(entry => entry == "app_icon.png"), "App Icon does not exist");
+                Assert.True(appEntries.HasAny(entry => entry == "app_deployment_manifest.xml"), "Deployment manifest does not exist");
             }
             finally
             {
