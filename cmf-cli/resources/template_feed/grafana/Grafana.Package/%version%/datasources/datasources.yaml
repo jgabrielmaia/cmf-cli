@@ -1,0 +1,12 @@
+apiVersion: 1
+
+datasources:
+#if (app)
+  - name: CMF gRPC Datasource
+    type: criticalmanufacturing-grpc-datasource
+    uid: #UID#
+    jsonData:
+      endpoint: #container-name:port#
+#else
+  ~
+#endif
